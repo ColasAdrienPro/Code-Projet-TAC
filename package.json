@@ -1,0 +1,36 @@
+{
+  "name": "tonaviscompte",
+  "version": "1.0.0",
+  "description": "PROJET TAC(Ton Avis Compte)",
+  "homepage": "https://github.com/ColasAdrienPro/Code-Projet-TAC#readme",
+  "bugs": {
+    "url": "https://github.com/ColasAdrienPro/Code-Projet-TAC/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ColasAdrienPro/Code-Projet-TAC.git"
+  },
+  "license": "ISC",
+  "author": "Colas Adrien",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tailwind": "npx @tailwindcss/cli -i ./public/assets/css/tailwind.css -o ./public/assets/css/style.css --watch"
+  },
+  "dependencies": {
+    "@prisma/adapter-mariadb": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "@tailwindcss/cli": "^4.3.3",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "tailwindcss": "^4.3.3",
+    "twig": "^3.0.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "prisma": "^7.8.0"
+  }
+}

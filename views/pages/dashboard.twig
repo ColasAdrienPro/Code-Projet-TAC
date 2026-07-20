@@ -1,0 +1,39 @@
+{% extends "../layout/base.twig" %}
+
+{% block main %}
+	<main class="min-h-screen bg-[#f8f9ff] px-4 py-8 text-[#0b1c30] sm:px-6 lg:px-8">
+		<section class="mx-auto w-full max-w-6xl">
+			<div class="flex flex-col gap-5 border-b border-[#becabc] pb-6 sm:flex-row sm:items-center sm:justify-between">
+				<div>
+					<p class="text-sm font-semibold uppercase tracking-[0.14em] text-[#00652c]">Dashboard</p>
+					<h1 class="mt-2 text-3xl font-bold leading-tight text-[#0b1c30] sm:text-4xl">Bonjour {{ user.firstname }} {{ user.lastname }}</h1>
+					<p class="mt-3 max-w-2xl text-base leading-7 text-[#3f493f]">Bienvenue dans votre espace TonAvisCompte.</p>
+				</div>
+
+				<form action="/logout" method="post">
+					<button type="submit" class="h-11 rounded-lg border border-[#becabc] bg-white px-5 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/40">Se deconnecter</button>
+				</form>
+			</div>
+
+			<div class="mt-8 grid gap-5 md:grid-cols-3">
+				<article class="rounded-2xl border border-[#becabc] bg-white p-6 shadow-[0_4px_20px_rgba(21,128,61,0.06)]">
+					<p class="text-sm font-semibold text-[#3f493f]">Profil</p>
+					<p class="mt-3 text-2xl font-bold text-[#0b1c30]">{{ user.firstname }} {{ user.lastname }}</p>
+					<p class="mt-2 text-sm text-[#3f493f]">{{ user.email }}</p>
+				</article>
+
+				<article class="rounded-2xl border border-[#becabc] bg-white p-6 shadow-[0_4px_20px_rgba(21,128,61,0.06)]">
+					<p class="text-sm font-semibold text-[#3f493f]">Avis publies</p>
+					<p class="mt-3 text-3xl font-bold text-[#00652c]">0</p>
+					<p class="mt-2 text-sm text-[#3f493f]">Votre activite apparaitra ici.</p>
+				</article>
+
+				<article class="rounded-2xl border border-[#becabc] bg-white p-6 shadow-[0_4px_20px_rgba(21,128,61,0.06)]">
+					<p class="text-sm font-semibold text-[#3f493f]">Statut</p>
+					<p class="mt-3 inline-flex rounded-full bg-[#d3ffd5] px-3 py-1 text-sm font-semibold text-[#00652c]">Connecte</p>
+					<p class="mt-3 text-sm text-[#3f493f]">Votre session est active.</p>
+				</article>
+			</div>
+		</section>
+	</main>
+{% endblock %}

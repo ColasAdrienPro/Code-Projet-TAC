@@ -370,6 +370,7 @@ userRouter.get("/dashboard", async (req, res) => {
                     id: "desc",
                 },
                 include: {
+                    category: true,
                     user: true,
                     opinions: true,
                     _count: {

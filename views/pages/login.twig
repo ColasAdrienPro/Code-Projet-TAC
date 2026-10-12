@@ -35,6 +35,10 @@
 						<p class="mt-6 rounded-xl border border-[#ffb3ad] bg-[#ffdad6] px-4 py-3 text-sm font-medium text-[#93000a]">{{ error }}</p>
 					{% endif %}
 
+					{% if success %}
+						<p class="mt-6 rounded-xl border border-[#8bd99a] bg-[#ddffe3] px-4 py-3 text-sm font-medium text-[#005323]">{{ success }}</p>
+					{% endif %}
+
 					<form action="/login" method="post" class="mt-8 grid gap-5">
 						<div class="grid gap-2">
 							<label for="email" class="text-sm font-semibold text-[#3f493f]">Email</label>
@@ -57,6 +61,7 @@
 								required
 								class="h-12 rounded-lg border border-[#becabc] bg-white px-4 text-base text-[#0b1c30] outline-none transition focus:border-[#00652c] focus:ring-4 focus:ring-[#95f8a7]/40"
 							>
+							<a href="/forgot-password" class="justify-self-end text-sm font-semibold text-[#00652c] transition hover:text-[#005323]">Mot de passe oublie ?</a>
 						</div>
 
 						<button type="submit" class="mt-2 h-12 rounded-lg bg-[#00652c] px-5 text-base font-semibold text-white shadow-[0_10px_30px_rgba(21,128,61,0.18)] transition hover:bg-[#005323] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/50 active:scale-[0.99]">Se connecter</button>

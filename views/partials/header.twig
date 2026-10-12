@@ -1,0 +1,19 @@
+<header class="sticky top-0 z-20 border-b border-[#d9dfd7] bg-white/95 px-4 text-[#0b1c30] backdrop-blur sm:px-6 lg:px-8">
+	<nav class="relative mx-auto flex min-h-16 w-full max-w-6xl items-center justify-between gap-4">
+		<a href="/dashboard" class="text-lg font-extrabold text-[#00652c]">TonAvisCompte</a>
+
+		<a href="/dashboard" class="absolute left-1/2 -translate-x-1/2 text-sm font-semibold text-[#3f493f] transition hover:text-[#00652c]">Accueil</a>
+
+		<div class="flex items-center justify-end gap-2 sm:gap-3">
+			{% if currentUser %}
+				<p class="hidden max-w-[180px] truncate text-sm font-semibold text-[#3f493f] md:block">{{ currentUser.firstname }} {{ currentUser.lastname }}</p>
+				<form action="/logout" method="post">
+					<button type="submit" class="h-10 rounded-lg border border-[#becabc] bg-white px-4 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/40">Se deconnecter</button>
+				</form>
+			{% else %}
+				<a href="/login" class="h-10 rounded-lg border border-[#becabc] bg-white px-4 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/40">Se connecter</a>
+				<a href="/register" class="h-10 rounded-lg bg-[#00652c] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#005323] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/50">S'inscrire</a>
+			{% endif %}
+		</div>
+	</nav>
+</header>

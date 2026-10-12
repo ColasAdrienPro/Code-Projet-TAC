@@ -1,0 +1,9 @@
+model UsersLikedOpinion {
+  id         Int     @id @default(autoincrement())
+  user_id    Int
+  opinion_id Int
+  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  opinion    Opinion @relation(fields: [opinion_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, opinion_id])
+}

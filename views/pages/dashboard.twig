@@ -1,0 +1,180 @@
+{% extends "../layout/base.twig" %}
+
+{% block main %}
+	<main class="min-h-[calc(100vh-4rem)] bg-[#f7f8fb] px-4 py-8 text-[#0b1c30] sm:px-6 lg:px-8">
+		<section class="mx-auto w-full max-w-6xl">
+			{% if error %}
+				<div class="mb-6 rounded-lg border border-[#f2c2c2] bg-[#fff2f2] px-4 py-3 text-sm font-semibold text-[#9a1c1c]">
+					{{ error }}
+				</div>
+			{% endif %}
+
+			<div class="border-b border-[#d8ded6] pb-8">
+				<p class="text-sm font-semibold uppercase tracking-[0.14em] text-[#00652c]">Dashboard</p>
+				{% if user %}
+					<h1 class="mt-2 text-3xl font-bold leading-tight text-[#0b1c30] sm:text-4xl">Bonjour {{ user.firstname }} {{ user.lastname }}</h1>
+					<p class="mt-3 max-w-2xl text-base leading-7 text-[#3f493f]">Retrouvez les produits, avis et commentaires publies sur TonAvisCompte.</p>
+				{% else %}
+					<h1 class="mt-2 max-w-3xl text-3xl font-bold leading-tight text-[#0b1c30] sm:text-4xl">Explorez les avis et les produits TonAvisCompte.</h1>
+					<p class="mt-3 max-w-2xl text-base leading-7 text-[#3f493f]">Connectez-vous pour publier vos contenus et suivre votre activite personnelle.</p>
+				{% endif %}
+			</div>
+
+			<div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+				<article class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<p class="text-sm font-semibold text-[#3f493f]">Produits</p>
+					<p class="mt-3 text-3xl font-bold text-[#00652c]">{{ stats.products }}</p>
+					<p class="mt-2 text-sm leading-6 text-[#5a6558]">Fiches disponibles dans la base.</p>
+				</article>
+
+				<article class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<p class="text-sm font-semibold text-[#3f493f]">Avis</p>
+					<p class="mt-3 text-3xl font-bold text-[#00652c]">{{ stats.opinions }}</p>
+					<p class="mt-2 text-sm leading-6 text-[#5a6558]">Retours publies par les utilisateurs.</p>
+				</article>
+
+				<article class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<p class="text-sm font-semibold text-[#3f493f]">Commentaires</p>
+					<p class="mt-3 text-3xl font-bold text-[#00652c]">{{ stats.comments }}</p>
+					<p class="mt-2 text-sm leading-6 text-[#5a6558]">Reponses ajoutees aux avis.</p>
+				</article>
+
+				<article class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<p class="text-sm font-semibold text-[#3f493f]">Note moyenne</p>
+					<p class="mt-3 text-3xl font-bold text-[#00652c]">{{ stats.averageNote }}/5</p>
+					<p class="mt-2 text-sm leading-6 text-[#5a6558]">Moyenne de tous les avis.</p>
+				</article>
+			</div>
+
+			<div class="mt-8 grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
+				<section>
+					<div class="flex items-end justify-between gap-4 border-b border-[#d8ded6] pb-3">
+						<div>
+							<p class="text-sm font-semibold uppercase tracking-[0.14em] text-[#00652c]">Catalogue</p>
+							<h2 class="mt-1 text-2xl font-bold text-[#0b1c30]">Derniers produits</h2>
+						</div>
+						<p class="text-sm font-semibold text-[#5a6558]">{{ products|length }} affiches</p>
+					</div>
+
+					{% if products|length %}
+						<div class="mt-5 grid gap-4 md:grid-cols-2">
+							{% for product in products %}
+								<article class="overflow-hidden rounded-lg border border-[#d8ded6] bg-white shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+									<div class="aspect-[16/9] bg-[#eef3ed]">
+										<img src="{{ product.image_url }}" alt="{{ product.title }}" class="h-full w-full object-cover">
+									</div>
+									<div class="p-5">
+										<div class="flex flex-wrap items-center gap-2">
+											<span class="rounded-full bg-[#e7f8ec] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-[#00652c]">{{ product.category }}</span>
+											{% if product.averageNote %}
+												<span class="text-sm font-semibold text-[#3f493f]">{{ product.averageNote }}/5</span>
+											{% else %}
+												<span class="text-sm font-semibold text-[#7b8579]">Aucun avis</span>
+											{% endif %}
+										</div>
+										<h3 class="mt-3 text-lg font-bold text-[#0b1c30]">{{ product.title }}</h3>
+										<p class="mt-2 text-sm leading-6 text-[#5a6558]">{{ product.descriptionPreview }}</p>
+										<div class="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-[#3f493f]">
+											<span>{{ product._count.opinions }} avis</span>
+											<span>{{ product.releaseDateLabel }}</span>
+										</div>
+									</div>
+								</article>
+							{% endfor %}
+						</div>
+					{% else %}
+						<div class="mt-5 rounded-lg border border-dashed border-[#becabc] bg-white p-8 text-center">
+							<p class="text-base font-semibold text-[#0b1c30]">Aucun produit pour le moment.</p>
+							<p class="mt-2 text-sm text-[#5a6558]">Les nouvelles fiches apparaitront ici des leur creation.</p>
+						</div>
+					{% endif %}
+				</section>
+
+				<aside class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<p class="text-sm font-semibold uppercase tracking-[0.14em] text-[#00652c]">{% if user %}Mon espace{% else %}Acces public{% endif %}</p>
+					{% if user %}
+						<h2 class="mt-2 text-xl font-bold text-[#0b1c30]">{{ user.username }}</h2>
+						<p class="mt-1 text-sm text-[#5a6558]">{{ user.email }}</p>
+						<div class="mt-5 grid grid-cols-2 gap-3">
+							<div class="rounded-lg bg-[#f1f6f0] p-4">
+								<p class="text-2xl font-bold text-[#00652c]">{{ userStats.products }}</p>
+								<p class="mt-1 text-sm font-semibold text-[#3f493f]">produits</p>
+							</div>
+							<div class="rounded-lg bg-[#f1f6f0] p-4">
+								<p class="text-2xl font-bold text-[#00652c]">{{ userStats.opinions }}</p>
+								<p class="mt-1 text-sm font-semibold text-[#3f493f]">avis</p>
+							</div>
+							<div class="rounded-lg bg-[#f1f6f0] p-4">
+								<p class="text-2xl font-bold text-[#00652c]">{{ userStats.comments }}</p>
+								<p class="mt-1 text-sm font-semibold text-[#3f493f]">commentaires</p>
+							</div>
+							<div class="rounded-lg bg-[#f1f6f0] p-4">
+								<p class="text-2xl font-bold text-[#00652c]">{{ userStats.likes }}</p>
+								<p class="mt-1 text-sm font-semibold text-[#3f493f]">likes</p>
+							</div>
+						</div>
+						<p class="mt-5 inline-flex rounded-full {% if user.is_verified %}bg-[#d3ffd5] text-[#00652c]{% else %}bg-[#fff1d6] text-[#8a4a00]{% endif %} px-3 py-1 text-sm font-semibold">
+							{% if user.is_verified %}Compte verifie{% else %}Compte non verifie{% endif %}
+						</p>
+					{% else %}
+						<h2 class="mt-2 text-xl font-bold text-[#0b1c30]">Dashboard consultable</h2>
+						<p class="mt-3 text-sm leading-6 text-[#5a6558]">Les contenus publics sont visibles sans compte. La connexion active les statistiques personnelles et les prochaines actions de contribution.</p>
+						<div class="mt-5 flex flex-wrap gap-3">
+							<a href="/login" class="rounded-lg border border-[#becabc] px-4 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Se connecter</a>
+							<a href="/register" class="rounded-lg bg-[#00652c] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#005323]">S'inscrire</a>
+						</div>
+					{% endif %}
+				</aside>
+			</div>
+
+			<div class="mt-8 grid gap-6 lg:grid-cols-2">
+				<section class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<div class="flex items-center justify-between gap-4 border-b border-[#edf0ec] pb-3">
+						<h2 class="text-xl font-bold text-[#0b1c30]">Derniers avis</h2>
+						<span class="text-sm font-semibold text-[#5a6558]">{{ opinions|length }}</span>
+					</div>
+					{% if opinions|length %}
+						<div class="divide-y divide-[#edf0ec]">
+							{% for opinion in opinions %}
+								<article class="py-4">
+									<div class="flex items-start justify-between gap-4">
+										<div>
+											<p class="text-sm font-semibold text-[#00652c]">{{ opinion.product.title }}</p>
+											<h3 class="mt-1 font-bold text-[#0b1c30]">{{ opinion.title }}</h3>
+										</div>
+										<span class="shrink-0 rounded-full bg-[#e7f8ec] px-3 py-1 text-sm font-bold text-[#00652c]">{{ opinion.note }}/5</span>
+									</div>
+									<p class="mt-2 text-sm leading-6 text-[#5a6558]">{{ opinion.textPreview }}</p>
+									<p class="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#7b8579]">Par {{ opinion.user.username }} - {{ opinion._count.comments }} commentaires - {{ opinion._count.likedBy }} likes</p>
+								</article>
+							{% endfor %}
+						</div>
+					{% else %}
+						<p class="py-8 text-center text-sm font-semibold text-[#5a6558]">Aucun avis publie pour le moment.</p>
+					{% endif %}
+				</section>
+
+				<section class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<div class="flex items-center justify-between gap-4 border-b border-[#edf0ec] pb-3">
+						<h2 class="text-xl font-bold text-[#0b1c30]">Commentaires recents</h2>
+						<span class="text-sm font-semibold text-[#5a6558]">{{ comments|length }}</span>
+					</div>
+					{% if comments|length %}
+						<div class="divide-y divide-[#edf0ec]">
+							{% for comment in comments %}
+								<article class="py-4">
+									<p class="text-sm font-semibold text-[#00652c]">{{ comment.opinion.product.title }}</p>
+									<h3 class="mt-1 font-bold text-[#0b1c30]">{{ comment.title }}</h3>
+									<p class="mt-2 text-sm leading-6 text-[#5a6558]">{{ comment.textPreview }}</p>
+									<p class="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#7b8579]">Par {{ comment.user.username }} - sur "{{ comment.opinion.title }}" - {{ comment._count.likedBy }} likes</p>
+								</article>
+							{% endfor %}
+						</div>
+					{% else %}
+						<p class="py-8 text-center text-sm font-semibold text-[#5a6558]">Aucun commentaire publie pour le moment.</p>
+					{% endif %}
+				</section>
+			</div>
+		</section>
+	</main>
+{% endblock %}

@@ -79,10 +79,12 @@
 									</div>
 								</a>
 								<a href="/products/{{ product.id }}" class="mt-4 inline-flex h-10 items-center justify-center rounded-lg border border-[#becabc] px-3 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Voir le detail</a>
-								{% if user and product.user_id == user.id %}
+								{% if user and (product.user_id == user.id or user.role == 'admin' or user.role == 'modo') %}
 									<div class="mt-4 flex flex-wrap gap-2 border-t border-[#edf0ec] pt-4">
-										<a href="/products/{{ product.id }}/edit" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Modifier</a>
-										<form action="/products/{{ product.id }}/delete" method="post" onsubmit="return confirm('Supprimer ce produit ?');">
+										{% if product.user_id == user.id %}
+											<a href="/products/{{ product.id }}/edit" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Modifier</a>
+										{% endif %}
+										<form action="/products/{{ product.id }}/delete" method="post" data-confirm-message="Supprimer ce produit ?">
 											<button type="submit" class="rounded-lg border border-[#f2c2c2] px-3 py-2 text-sm font-semibold text-[#9a1c1c] transition hover:bg-[#fff2f2]">Supprimer</button>
 										</form>
 									</div>

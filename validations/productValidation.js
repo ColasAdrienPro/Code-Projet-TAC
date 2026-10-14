@@ -2,6 +2,7 @@ import { z } from "zod"
 
 const urlRegex = /^https?:\/\/.+/i
 
+// Valide les informations necessaires a la creation ou modification d'un produit.
 export const productSchema = z.object({
     title: z.string()
         .trim()

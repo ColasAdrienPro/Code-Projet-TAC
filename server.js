@@ -1,6 +1,8 @@
 import express from "express"
 import session from "express-session"
 import "dotenv/config"
+import commentRouter from "./router/commentRouter.js"
+import opinionRouter from "./router/opinionRouter.js"
 import productRouter from "./router/productRouter.js"
 import userRouter from "./router/userRouter.js"
 
@@ -23,7 +25,10 @@ app.use(session({
 
 app.use(userRouter)
 app.use(productRouter)
+app.use(opinionRouter)
+app.use(commentRouter)
 
+// Demarre le serveur Express et affiche une erreur si le port ne repond pas.
 app.listen(process.env.PORT, (err)=>{
     if (err) {
         console.log(err);

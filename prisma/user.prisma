@@ -15,6 +15,7 @@ model User {
   likedOpinions    UsersLikedOpinion[]
   likedComments    UsersLikedComment[]
   passwordResetTokens PasswordResetToken[]
+  accountVerificationCodes AccountVerificationCode[]
 }
 
 enum Role {

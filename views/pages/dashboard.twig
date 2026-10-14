@@ -20,32 +20,6 @@
 				{% endif %}
 			</div>
 
-			<div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-				<a href="/products/latest" class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)] transition hover:border-[#00652c] hover:bg-[#fbfdfb]">
-					<p class="text-sm font-semibold text-[#3f493f]">Derniers produits</p>
-					<p class="mt-3 text-3xl font-bold text-[#00652c]">{{ stats.products }}</p>
-					<p class="mt-2 text-sm leading-6 text-[#5a6558]">Voir les 20 dernieres fiches ajoutees.</p>
-				</a>
-
-				<article class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
-					<p class="text-sm font-semibold text-[#3f493f]">Avis</p>
-					<p class="mt-3 text-3xl font-bold text-[#00652c]">{{ stats.opinions }}</p>
-					<p class="mt-2 text-sm leading-6 text-[#5a6558]">Retours publies par les utilisateurs.</p>
-				</article>
-
-				<article class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
-					<p class="text-sm font-semibold text-[#3f493f]">Commentaires</p>
-					<p class="mt-3 text-3xl font-bold text-[#00652c]">{{ stats.comments }}</p>
-					<p class="mt-2 text-sm leading-6 text-[#5a6558]">Reponses ajoutees aux avis.</p>
-				</article>
-
-				<article class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
-					<p class="text-sm font-semibold text-[#3f493f]">Note moyenne</p>
-					<p class="mt-3 text-3xl font-bold text-[#00652c]">{{ stats.averageNote }}/5</p>
-					<p class="mt-2 text-sm leading-6 text-[#5a6558]">Moyenne de tous les avis.</p>
-				</article>
-			</div>
-
 			<div class="mt-8 grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
 				<section>
 					<div class="flex items-end justify-between gap-4 border-b border-[#d8ded6] pb-3">
@@ -55,6 +29,7 @@
 						</div>
 						<div class="flex flex-wrap items-center justify-end gap-3">
 							<p class="text-sm font-semibold text-[#5a6558]">{{ products|length }} affiches</p>
+							<a href="/products/latest" class="rounded-lg border border-[#becabc] px-4 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Parcourir</a>
 							{% if user %}
 								<a href="/products/new" class="rounded-lg bg-[#00652c] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#005323]">Ajouter</a>
 							{% endif %}
@@ -86,10 +61,12 @@
 												<span>Voir le detail</span>
 											</div>
 										</a>
-										{% if user and product.user_id == user.id %}
+										{% if user and (product.user_id == user.id or user.role == 'admin' or user.role == 'modo') %}
 											<div class="mt-4 flex flex-wrap gap-2 border-t border-[#edf0ec] pt-4">
-												<a href="/products/{{ product.id }}/edit" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Modifier</a>
-												<form action="/products/{{ product.id }}/delete" method="post" onsubmit="return confirm('Supprimer ce produit ?');">
+												{% if product.user_id == user.id %}
+													<a href="/products/{{ product.id }}/edit" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Modifier</a>
+												{% endif %}
+												<form action="/products/{{ product.id }}/delete" method="post" data-confirm-message="Supprimer ce produit ?">
 													<button type="submit" class="rounded-lg border border-[#f2c2c2] px-3 py-2 text-sm font-semibold text-[#9a1c1c] transition hover:bg-[#fff2f2]">Supprimer</button>
 												</form>
 											</div>
@@ -132,6 +109,9 @@
 						<p class="mt-5 inline-flex rounded-full {% if user.is_verified %}bg-[#d3ffd5] text-[#00652c]{% else %}bg-[#fff1d6] text-[#8a4a00]{% endif %} px-3 py-1 text-sm font-semibold">
 							{% if user.is_verified %}Compte verifie{% else %}Compte non verifie{% endif %}
 						</p>
+						<div class="mt-5">
+							<a href="/user-dashboard" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#00652c] px-4 text-sm font-semibold text-white transition hover:bg-[#005323]">Voir mon espace</a>
+						</div>
 					{% else %}
 						<h2 class="mt-2 text-xl font-bold text-[#0b1c30]">Dashboard consultable</h2>
 						<p class="mt-3 text-sm leading-6 text-[#5a6558]">Les contenus publics sont visibles sans compte. La connexion active les statistiques personnelles et les prochaines actions de contribution.</p>
@@ -146,7 +126,7 @@
 			<div class="mt-8 grid gap-6 lg:grid-cols-2">
 				<section class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
 					<div class="flex items-center justify-between gap-4 border-b border-[#edf0ec] pb-3">
-						<h2 class="text-xl font-bold text-[#0b1c30]">Derniers avis</h2>
+						<h2 class="text-xl font-bold text-[#0b1c30]">Avis populaires</h2>
 						<span class="text-sm font-semibold text-[#5a6558]">{{ opinions|length }}</span>
 					</div>
 					{% if opinions|length %}
@@ -161,12 +141,24 @@
 										<span class="shrink-0 rounded-full bg-[#e7f8ec] px-3 py-1 text-sm font-bold text-[#00652c]">{{ opinion.note }}/5</span>
 									</div>
 									<p class="mt-2 text-sm leading-6 text-[#5a6558]">{{ opinion.textPreview }}</p>
-									<p class="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#7b8579]">Par {{ opinion.user.username }} - {{ opinion._count.comments }} commentaires - {{ opinion._count.likedBy }} likes</p>
+									<div class="mt-3 flex flex-wrap items-center gap-2">
+										<p class="text-xs font-semibold uppercase tracking-[0.08em] text-[#7b8579]">Par {{ opinion.user.username }} - {{ opinion._count.comments }} commentaires - {{ opinion._count.likedBy }} likes</p>
+										<span class="rounded-full px-2.5 py-1 text-xs font-bold {% if opinion.user.is_verified %}bg-[#d3ffd5] text-[#00652c]{% else %}bg-[#fff1d6] text-[#8a4a00]{% endif %}">
+											{% if opinion.user.is_verified %}Compte verifie{% else %}Compte non verifie{% endif %}
+										</span>
+									</div>
+									{% if user and (opinion.user_id == user.id or user.role == 'admin' or user.role == 'modo') %}
+										<div class="mt-3 flex flex-wrap gap-2">
+											<form action="/opinions/{{ opinion.id }}/delete" method="post" data-confirm-message="Supprimer cet avis ?">
+												<button type="submit" class="rounded-lg border border-[#f2c2c2] px-3 py-2 text-sm font-semibold text-[#9a1c1c] transition hover:bg-[#fff2f2]">Supprimer</button>
+											</form>
+										</div>
+									{% endif %}
 								</article>
 							{% endfor %}
 						</div>
 					{% else %}
-						<p class="py-8 text-center text-sm font-semibold text-[#5a6558]">Aucun avis publie pour le moment.</p>
+						<p class="py-8 text-center text-sm font-semibold text-[#5a6558]">Aucun avis populaire pour le moment.</p>
 					{% endif %}
 				</section>
 
@@ -182,7 +174,14 @@
 									<p class="text-sm font-semibold text-[#00652c]">{{ comment.opinion.product.title }}</p>
 									<h3 class="mt-1 font-bold text-[#0b1c30]">{{ comment.title }}</h3>
 									<p class="mt-2 text-sm leading-6 text-[#5a6558]">{{ comment.textPreview }}</p>
-									<p class="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#7b8579]">Par {{ comment.user.username }} - sur "{{ comment.opinion.title }}" - {{ comment._count.likedBy }} likes</p>
+									<p class="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#7b8579]">Par {{ comment.user ? comment.user.username : 'Anonyme' }} - sur "{{ comment.opinion.title }}" - {{ comment._count.likedBy }} likes</p>
+									{% if user and (comment.user_id == user.id or user.role == 'admin' or user.role == 'modo') %}
+										<div class="mt-3 flex flex-wrap gap-2">
+											<form action="/comments/{{ comment.id }}/delete" method="post" data-confirm-message="Supprimer ce commentaire ?">
+												<button type="submit" class="rounded-lg border border-[#f2c2c2] px-3 py-2 text-sm font-semibold text-[#9a1c1c] transition hover:bg-[#fff2f2]">Supprimer</button>
+											</form>
+										</div>
+									{% endif %}
 								</article>
 							{% endfor %}
 						</div>

@@ -17,6 +17,12 @@
 				</div>
 			{% endif %}
 
+			{% if action == '/products' %}
+				<div class="mb-6 rounded-lg border border-[#fff1b8] bg-[#fffbea] px-4 py-3 text-sm font-semibold text-[#8a4a00]">
+					Le produit sera envoye en validation avant publication.
+				</div>
+			{% endif %}
+
 			<form action="{{ action }}" method="post" class="grid gap-6 lg:grid-cols-[1fr_360px]">
 				<div class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)] sm:p-6">
 					<div class="grid gap-5 sm:grid-cols-2">

@@ -8,13 +8,48 @@
 
 		<div class="flex items-center justify-end gap-2 sm:gap-3">
 			{% if currentUser %}
-				<p class="hidden max-w-[180px] truncate text-sm font-semibold text-[#3f493f] md:block">{{ currentUser.firstname }} {{ currentUser.lastname }}</p>
-				<form action="/logout" method="post">
-					<button type="submit" class="h-10 rounded-lg border border-[#becabc] bg-white px-4 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/40">Se deconnecter</button>
-				</form>
+				<details class="group relative">
+					<summary aria-label="Menu utilisateur" class="menu-burger-button flex items-center justify-center rounded-lg border border-[#becabc] bg-white text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/40">
+						<span class="menu-burger-lines">
+							<span></span>
+							<span></span>
+							<span></span>
+						</span>
+					</summary>
+					<div class="menu-dropdown absolute right-0 mt-2 overflow-hidden rounded-lg border border-[#d8ded6] bg-white shadow-[0_10px_30px_rgba(15,42,28,0.12)]">
+						{% if currentUser.role == 'admin' or currentUser.role == 'modo' %}
+							<a href="/products/validation" class="flex items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-[#3f493f] transition hover:bg-[#ecfdf0] hover:text-[#00652c]">
+								<span>Demandes produits</span>
+								{% if pendingProductCount %}
+									<span class="rounded-full bg-[#fff1d6] px-2 py-0.5 text-xs font-bold text-[#8a4a00]">{{ pendingProductCount }}</span>
+								{% endif %}
+							</a>
+						{% endif %}
+						<a href="/user-dashboard" class="block px-4 py-3 text-sm font-semibold text-[#3f493f] transition hover:bg-[#ecfdf0] hover:text-[#00652c]">Mon profil</a>
+						<form action="/logout" method="post">
+							<button type="submit" class="menu-dropdown-button block w-full px-4 py-3 text-sm font-semibold text-[#9a1c1c] transition hover:bg-[#fff2f2]">Se deconnecter</button>
+						</form>
+					</div>
+				</details>
 			{% else %}
-				<a href="/login" class="h-10 rounded-lg border border-[#becabc] bg-white px-4 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/40">Se connecter</a>
-				<a href="/register" class="h-10 rounded-lg bg-[#00652c] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#005323] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/50">S'inscrire</a>
+				<div class="guest-auth-links">
+					<a href="/login" class="h-10 rounded-lg border border-[#becabc] bg-white px-4 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/40">Se connecter</a>
+					<a href="/register" class="h-10 rounded-lg bg-[#00652c] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#005323] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/50">S'inscrire</a>
+				</div>
+
+				<details class="guest-auth-menu relative">
+					<summary aria-label="Menu de connexion" class="menu-burger-button flex items-center justify-center rounded-lg border border-[#becabc] bg-white text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/40">
+						<span class="menu-burger-lines">
+							<span></span>
+							<span></span>
+							<span></span>
+						</span>
+					</summary>
+					<div class="menu-dropdown absolute right-0 mt-2 overflow-hidden rounded-lg border border-[#d8ded6] bg-white shadow-[0_10px_30px_rgba(15,42,28,0.12)]">
+						<a href="/login" class="block px-4 py-3 text-sm font-semibold text-[#3f493f] transition hover:bg-[#ecfdf0] hover:text-[#00652c]">Se connecter</a>
+						<a href="/register" class="block px-4 py-3 text-sm font-semibold text-[#00652c] transition hover:bg-[#ecfdf0] hover:text-[#005323]">S'inscrire</a>
+					</div>
+				</details>
 			{% endif %}
 		</div>
 	</nav>

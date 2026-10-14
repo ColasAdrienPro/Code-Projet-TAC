@@ -5,6 +5,7 @@ const usernameRegex = /^[A-Za-z0-9_-]{3,30}$/
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/
 
+// Valide les donnees du formulaire d'inscription.
 export const registerUserSchema = z.object({
     firstname: z.string()
         .trim()
@@ -29,6 +30,7 @@ export const registerUserSchema = z.object({
     path: ["confirmPassword"],
 })
 
+// Valide les identifiants envoyes lors de la connexion.
 export const loginUserSchema = z.object({
     email: z.string()
         .trim()
@@ -38,6 +40,7 @@ export const loginUserSchema = z.object({
         .min(1, "Le mot de passe est obligatoire."),
 })
 
+// Valide l'email utilise pour demander une reinitialisation de mot de passe.
 export const forgotPasswordSchema = z.object({
     email: z.string()
         .trim()
@@ -45,6 +48,7 @@ export const forgotPasswordSchema = z.object({
         .regex(emailRegex, "L'email n'est pas valide."),
 })
 
+// Valide le nouveau mot de passe et sa confirmation.
 export const resetPasswordSchema = z.object({
     password: z.string()
         .regex(passwordRegex, "Le mot de passe doit contenir au moins 8 caracteres, une majuscule, une minuscule, un chiffre et un caractere special."),
@@ -52,4 +56,23 @@ export const resetPasswordSchema = z.object({
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Les mots de passe ne correspondent pas.",
     path: ["confirmPassword"],
+})
+
+// Valide l'email et le code saisis pour verifier un compte.
+export const verifyAccountSchema = z.object({
+    email: z.string()
+        .trim()
+        .min(1, "L'email est obligatoire.")
+        .regex(emailRegex, "L'email n'est pas valide."),
+    code: z.string()
+        .trim()
+        .regex(/^\d{6}$/, "Le code doit contenir exactement 6 chiffres."),
+})
+
+// Valide l'email avant de renvoyer un code de verification.
+export const resendVerificationCodeSchema = z.object({
+    email: z.string()
+        .trim()
+        .min(1, "L'email est obligatoire.")
+        .regex(emailRegex, "L'email n'est pas valide."),
 })

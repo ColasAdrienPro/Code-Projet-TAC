@@ -1,0 +1,11 @@
+model AccountVerificationCode {
+  id        Int      @id @default(autoincrement())
+  codeHash  String   @db.VarChar(255)
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

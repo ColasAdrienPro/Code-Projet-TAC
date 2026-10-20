@@ -1,0 +1,64 @@
+{% extends "../layout/base.twig" %}
+
+{% block main %}
+	<main class="min-h-[calc(100vh-4rem)] bg-[#f7f8fb] px-4 py-8 text-[#0b1c30] sm:px-6 lg:px-8">
+		<section class="mx-auto w-full max-w-5xl">
+			<div class="mb-8 flex flex-col gap-4 border-b border-[#d8ded6] pb-6 sm:flex-row sm:items-end sm:justify-between">
+				<div>
+					<p class="text-sm font-semibold uppercase tracking-[0.14em] text-[#00652c]">Avis</p>
+					<h1 class="mt-2 text-3xl font-bold leading-tight text-[#0b1c30] sm:text-4xl">{{ title }}</h1>
+					<p class="mt-3 max-w-2xl text-base leading-7 text-[#3f493f]">Sur {{ product.title }}</p>
+				</div>
+				<a href="{{ cancelUrl }}" class="inline-flex h-11 items-center justify-center rounded-lg border border-[#becabc] bg-white px-4 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/40">Retour</a>
+			</div>
+
+			{% if error %}
+				<div class="mb-6 rounded-lg border border-[#f2c2c2] bg-[#fff2f2] px-4 py-3 text-sm font-semibold text-[#9a1c1c] shadow-[0_8px_24px_rgba(154,28,28,0.06)]">
+					{{ error }}
+				</div>
+			{% endif %}
+
+			<form action="{{ action }}" method="post" class="grid gap-6 lg:grid-cols-[1fr_320px]">
+				<div class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)] sm:p-6">
+					<div class="grid gap-5">
+						<div>
+							<label for="note" class="text-sm font-semibold text-[#3f493f]">Note</label>
+							<select id="note" name="note" class="mt-2 h-12 w-full rounded-lg border border-[#becabc] bg-white px-4 text-base text-[#0b1c30] outline-none transition focus:border-[#00652c] focus:ring-4 focus:ring-[#95f8a7]/35" required>
+								<option value="">Choisir une note</option>
+								{% for note in 1..5 %}
+									<option value="{{ note }}" {% if values.note == note %}selected{% endif %}>{{ note }}/5</option>
+								{% endfor %}
+							</select>
+						</div>
+
+						<div>
+							<label for="title" class="text-sm font-semibold text-[#3f493f]">Titre</label>
+							<input id="title" name="title" type="text" value="{{ values.title }}" class="mt-2 h-12 w-full rounded-lg border border-[#becabc] bg-white px-4 text-base text-[#0b1c30] outline-none transition placeholder:text-[#8b9489] focus:border-[#00652c] focus:ring-4 focus:ring-[#95f8a7]/35" placeholder="Titre de votre avis" required>
+						</div>
+
+						<div>
+							<label for="text" class="text-sm font-semibold text-[#3f493f]">Votre avis</label>
+							<textarea id="text" name="text" rows="9" class="mt-2 min-h-48 w-full resize-y rounded-lg border border-[#becabc] bg-white px-4 py-3 text-base leading-7 text-[#0b1c30] outline-none transition placeholder:text-[#8b9489] focus:border-[#00652c] focus:ring-4 focus:ring-[#95f8a7]/35" placeholder="Partagez votre retour" required>{{ values.text }}</textarea>
+						</div>
+					</div>
+
+					<div class="mt-6 flex flex-col-reverse gap-3 border-t border-[#edf0ec] pt-5 sm:flex-row sm:justify-end">
+						<a href="{{ cancelUrl }}" class="inline-flex h-11 items-center justify-center rounded-lg border border-[#becabc] bg-white px-5 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/40">Annuler</a>
+						<button type="submit" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#00652c] px-5 text-sm font-semibold text-white shadow-[0_10px_28px_rgba(0,101,44,0.18)] transition hover:bg-[#005323] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/50 active:scale-[0.99]">{{ submitLabel }}</button>
+					</div>
+				</div>
+
+				<aside class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)] lg:sticky lg:top-24 lg:self-start">
+					<p class="text-sm font-semibold uppercase tracking-[0.14em] text-[#00652c]">Produit</p>
+					<div class="mt-4 overflow-hidden rounded-lg border border-[#d8ded6] bg-[#eef3ed]">
+						<div class="aspect-[16/10]">
+							<img src="{{ product.image_url }}" alt="{{ product.title }}" class="h-full w-full object-cover">
+						</div>
+					</div>
+					<h2 class="mt-4 break-words text-xl font-bold leading-snug text-[#0b1c30]">{{ product.title }}</h2>
+					<p class="mt-2 break-words text-sm leading-6 text-[#5a6558]">{{ product.description }}</p>
+				</aside>
+			</form>
+		</section>
+	</main>
+{% endblock %}

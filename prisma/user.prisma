@@ -1,0 +1,25 @@
+model User {
+  id               Int                 @id @default(autoincrement())
+  firstname        String              @db.VarChar(255)
+  lastname         String              @db.VarChar(255)
+  username         String              @unique @db.VarChar(255)
+  email            String              @unique @db.VarChar(255)
+  password         String              @db.VarChar(255)
+  role             Role                @default(user)
+  is_verified      Boolean             @default(false)
+  inscription_date DateTime            @default(now())
+  is_banned        Boolean             @default(false)
+  products         Product[]
+  opinions         Opinion[]
+  comments         Comment[]
+  likedOpinions    UsersLikedOpinion[]
+  likedComments    UsersLikedComment[]
+  passwordResetTokens PasswordResetToken[]
+  accountVerificationCodes AccountVerificationCode[]
+}
+
+enum Role {
+  user
+  modo
+  admin
+}

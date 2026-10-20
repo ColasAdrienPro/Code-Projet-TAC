@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>TonAvisCompte</title>
+		<link rel="icon" type="image/png" href="/assets/images/logo-tonaviscompte.png">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="/assets/css/style.css">
+		<script src="/assets/js/main.js" defer></script>
+	</head>
+	<body>
+        {% include "../partials/header.twig" %}
+        {% block main %}{% endblock %}
+		<div class="confirm-modal" data-confirm-modal hidden>
+			<div class="confirm-modal__backdrop" data-confirm-cancel></div>
+			<section class="confirm-modal__panel" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title" aria-describedby="confirm-modal-message" tabindex="-1">
+				<div class="confirm-modal__icon" aria-hidden="true">!</div>
+				<div>
+					<p id="confirm-modal-title" class="confirm-modal__title">Confirmation requise</p>
+					<p id="confirm-modal-message" class="confirm-modal__message" data-confirm-modal-message>Voulez-vous continuer ?</p>
+				</div>
+				<div class="confirm-modal__actions">
+					<button type="button" class="confirm-modal__button confirm-modal__button--secondary" data-confirm-cancel>Annuler</button>
+					<button type="button" class="confirm-modal__button confirm-modal__button--danger" data-confirm-submit>Confirmer</button>
+				</div>
+			</section>
+		</div>
+    </body>
+</html>

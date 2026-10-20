@@ -1,0 +1,12 @@
+model Opinion {
+  id         Int                 @id @default(autoincrement())
+  note       Int
+  title      String              @db.VarChar(255)
+  text       String              @db.Text
+  product_id Int
+  user_id    Int
+  product    Product             @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  user       User                @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  comments   Comment[]
+  likedBy    UsersLikedOpinion[]
+}

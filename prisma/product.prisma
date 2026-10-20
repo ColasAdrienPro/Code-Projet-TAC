@@ -1,0 +1,20 @@
+model Product {
+  id           Int       @id @default(autoincrement())
+  image_url    String    @db.VarChar(255)
+  title        String    @db.VarChar(255)
+  category_id  Int
+  release_date DateTime  @db.Date
+  description  String    @db.Text
+  status       ProductStatus @default(pending)
+  created_at   DateTime  @default(now())
+  validated_at DateTime?
+  user_id      Int
+  category     Category  @relation(fields: [category_id], references: [id])
+  user         User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  opinions     Opinion[]
+}
+
+enum ProductStatus {
+  pending
+  public
+}

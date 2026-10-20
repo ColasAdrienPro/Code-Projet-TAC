@@ -1,0 +1,299 @@
+{% extends "../layout/base.twig" %}
+
+{% block main %}
+	<main class="min-h-[calc(100vh-4rem)] bg-[#f7f8fb] px-4 py-8 text-[#0b1c30] sm:px-6 lg:px-8">
+		<section class="mx-auto w-full max-w-6xl">
+			{% if error %}
+				<div class="mb-6 rounded-lg border border-[#f2c2c2] bg-[#fff2f2] px-4 py-3 text-sm font-semibold text-[#9a1c1c]">
+					{{ error }}
+				</div>
+			{% endif %}
+
+			{% if success %}
+				<div class="mb-6 rounded-lg border border-[#8bd99a] bg-[#ddffe3] px-4 py-3 text-sm font-semibold text-[#005323]">
+					{{ success }}
+				</div>
+			{% endif %}
+
+			<div class="mb-6">
+				<a href="/dashboard" class="inline-flex h-11 items-center justify-center rounded-lg border border-[#becabc] bg-white px-4 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0] focus:outline-none focus:ring-4 focus:ring-[#95f8a7]/40">Retour au dashboard</a>
+			</div>
+
+			<div class="border-b border-[#d8ded6] pb-6">
+				<p class="text-sm font-semibold uppercase tracking-[0.14em] text-[#00652c]">Mon espace</p>
+				<div class="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+					<div>
+						<h1 class="text-3xl font-bold leading-tight text-[#0b1c30] sm:text-4xl">Mes contenus</h1>
+						<p class="mt-3 max-w-2xl text-base leading-7 text-[#3f493f]">Vos produits, avis et commentaires affiches par tranches de {{ pagination.pageSize }}.</p>
+					</div>
+					<a href="/products/new" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#00652c] px-4 text-sm font-semibold text-white transition hover:bg-[#005323]">Ajouter un produit</a>
+				</div>
+			</div>
+
+			<section class="mt-6 rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+				<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+					<div>
+						<p class="text-sm font-semibold text-[#3f493f]">Statut du compte</p>
+						<p class="mt-2 inline-flex rounded-full {% if user.is_verified %}bg-[#d3ffd5] text-[#00652c]{% else %}bg-[#fff1d6] text-[#8a4a00]{% endif %} px-3 py-1 text-sm font-semibold">
+							{% if user.is_verified %}Compte verifie{% else %}Compte non verifie{% endif %}
+						</p>
+					</div>
+					{% if not user.is_verified %}
+						<form action="/request-account-verification" method="post">
+							<button type="submit" class="inline-flex h-11 items-center justify-center rounded-lg bg-[#00652c] px-4 text-sm font-semibold text-white transition hover:bg-[#005323]">Demander une verification</button>
+						</form>
+					{% else %}
+						<p class="text-sm font-semibold text-[#5a6558]">Votre email est confirme.</p>
+					{% endif %}
+				</div>
+			</section>
+
+			<form action="/user-dashboard" method="get" class="mt-6 grid gap-3 rounded-lg border border-[#d8ded6] bg-white p-4 shadow-[0_4px_18px_rgba(15,42,28,0.05)] md:grid-cols-[1fr_1fr_auto]">
+				<div>
+					<label for="category" class="text-sm font-semibold text-[#3f493f]">Categorie</label>
+					<select id="category" name="category" class="mt-2 h-11 w-full rounded-lg border border-[#becabc] bg-white px-3 text-sm font-semibold text-[#0b1c30] outline-none transition focus:border-[#00652c] focus:ring-4 focus:ring-[#95f8a7]/35">
+						<option value="">Toutes les categories</option>
+						{% for category in categories %}
+							<option value="{{ category.id }}" {% if filters.categoryId == category.id %}selected{% endif %}>{{ category.name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div>
+					<label for="search" class="text-sm font-semibold text-[#3f493f]">Recherche precise</label>
+					<input id="search" name="search" type="search" value="{{ filters.search }}" placeholder="Produit, avis, commentaire..." class="mt-2 h-11 w-full rounded-lg border border-[#becabc] bg-white px-3 text-sm text-[#0b1c30] outline-none transition placeholder:text-[#7b8579] focus:border-[#00652c] focus:ring-4 focus:ring-[#95f8a7]/35">
+				</div>
+				<div class="flex flex-wrap items-end gap-2">
+					<button type="submit" class="h-11 rounded-lg bg-[#00652c] px-4 text-sm font-semibold text-white transition hover:bg-[#005323]">Filtrer</button>
+					{% if filters.hasFilters %}
+						<a href="/user-dashboard" class="inline-flex h-11 items-center rounded-lg border border-[#becabc] px-4 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Reinitialiser</a>
+					{% endif %}
+				</div>
+			</form>
+
+			<div class="mt-8 grid gap-4 md:grid-cols-3">
+				<article class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<p class="text-sm font-semibold text-[#3f493f]">Produits trouves</p>
+					<p class="mt-3 text-3xl font-bold text-[#00652c]">{{ pagination.products.total }}</p>
+				</article>
+				<article class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<p class="text-sm font-semibold text-[#3f493f]">Avis trouves</p>
+					<p class="mt-3 text-3xl font-bold text-[#00652c]">{{ pagination.opinions.total }}</p>
+				</article>
+				<article class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<p class="text-sm font-semibold text-[#3f493f]">Commentaires trouves</p>
+					<p class="mt-3 text-3xl font-bold text-[#00652c]">{{ pagination.comments.total }}</p>
+				</article>
+			</div>
+
+			<div class="mt-8 grid gap-6 lg:grid-cols-2">
+				<section class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<div class="border-b border-[#edf0ec] pb-3">
+						<p class="text-sm font-semibold uppercase tracking-[0.14em] text-[#00652c]">Top avis</p>
+						<h2 class="mt-1 text-xl font-bold text-[#0b1c30]">Les 5 avis les plus commentes</h2>
+					</div>
+					{% if mostCommentedOpinions|length %}
+						<div class="divide-y divide-[#edf0ec]">
+							{% for opinion in mostCommentedOpinions %}
+								<article class="py-4">
+									<p class="text-sm font-semibold text-[#00652c]">{{ opinion.product.title }}</p>
+									<h3 class="mt-1 font-bold text-[#0b1c30]">{{ opinion.title }}</h3>
+									<p class="mt-2 text-sm leading-6 text-[#5a6558]">{{ opinion.textPreview }}</p>
+									<p class="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#7b8579]">{{ opinion._count.comments }} commentaires - {{ opinion._count.likedBy }} likes</p>
+									{% if user and (opinion.user_id == user.id or user.role == 'admin' or user.role == 'modo') %}
+										<div class="mt-3 flex flex-wrap gap-2">
+											<form action="/opinions/{{ opinion.id }}/delete" method="post" data-confirm-message="Supprimer cet avis ?">
+												<button type="submit" class="rounded-lg border border-[#f2c2c2] px-3 py-2 text-sm font-semibold text-[#9a1c1c] transition hover:bg-[#fff2f2]">Supprimer</button>
+											</form>
+										</div>
+									{% endif %}
+								</article>
+							{% endfor %}
+						</div>
+					{% else %}
+						<p class="py-8 text-center text-sm font-semibold text-[#5a6558]">Aucun avis publie pour le moment.</p>
+					{% endif %}
+				</section>
+
+				<section class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<div class="border-b border-[#edf0ec] pb-3">
+						<p class="text-sm font-semibold uppercase tracking-[0.14em] text-[#00652c]">Top commentaires</p>
+						<h2 class="mt-1 text-xl font-bold text-[#0b1c30]">Les 5 commentaires les plus aimes</h2>
+					</div>
+					{% if mostLikedComments|length %}
+						<div class="divide-y divide-[#edf0ec]">
+							{% for comment in mostLikedComments %}
+								<article class="py-4">
+									<p class="text-sm font-semibold text-[#00652c]">{{ comment.opinion.product.title }}</p>
+									<h3 class="mt-1 font-bold text-[#0b1c30]">{{ comment.title }}</h3>
+									<p class="mt-2 text-sm leading-6 text-[#5a6558]">{{ comment.textPreview }}</p>
+									<p class="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#7b8579]">Sur "{{ comment.opinion.title }}" - {{ comment._count.likedBy }} likes</p>
+									{% if user and (comment.user_id == user.id or user.role == 'admin' or user.role == 'modo') %}
+										<div class="mt-3 flex flex-wrap gap-2">
+											<form action="/comments/{{ comment.id }}/delete" method="post" data-confirm-message="Supprimer ce commentaire ?">
+												<button type="submit" class="rounded-lg border border-[#f2c2c2] px-3 py-2 text-sm font-semibold text-[#9a1c1c] transition hover:bg-[#fff2f2]">Supprimer</button>
+											</form>
+										</div>
+									{% endif %}
+								</article>
+							{% endfor %}
+						</div>
+					{% else %}
+						<p class="py-8 text-center text-sm font-semibold text-[#5a6558]">Aucun commentaire publie pour le moment.</p>
+					{% endif %}
+				</section>
+			</div>
+
+			<section class="mt-8">
+				<div class="flex flex-wrap items-end justify-between gap-4 border-b border-[#d8ded6] pb-3">
+					<div>
+						<p class="text-sm font-semibold uppercase tracking-[0.14em] text-[#00652c]">Produits</p>
+						<h2 class="mt-1 text-2xl font-bold text-[#0b1c30]">Mes produits</h2>
+					</div>
+					<p class="text-sm font-semibold text-[#5a6558]">{{ products|length }} sur {{ pagination.products.total }} affiches</p>
+				</div>
+
+				{% if products|length %}
+					<div class="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+						{% for product in products %}
+							<article class="overflow-hidden rounded-lg border border-[#d8ded6] bg-white shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+								<a href="/products/{{ product.id }}" class="block transition hover:bg-[#fbfdfb]">
+									<div class="aspect-[16/9] bg-[#eef3ed]">
+										<img src="{{ product.image_url }}" alt="{{ product.title }}" class="h-full w-full object-cover">
+									</div>
+								</a>
+								<div class="p-5">
+									<div class="flex flex-wrap items-center gap-2">
+										<span class="rounded-full bg-[#e7f8ec] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-[#00652c]">{{ product.category.name }}</span>
+										{% if product.status == 'pending' %}
+											<span class="rounded-full bg-[#fff1d6] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-[#8a4a00]">En attente</span>
+										{% else %}
+											<span class="rounded-full bg-[#d3ffd5] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-[#00652c]">Public</span>
+										{% endif %}
+										{% if product.averageNote %}
+											<span class="text-sm font-semibold text-[#3f493f]">{{ product.averageNote }}/5</span>
+										{% else %}
+											<span class="text-sm font-semibold text-[#7b8579]">Aucun avis</span>
+										{% endif %}
+									</div>
+									<h3 class="mt-3 text-lg font-bold text-[#0b1c30]">{{ product.title }}</h3>
+									<p class="mt-2 text-sm leading-6 text-[#5a6558]">{{ product.descriptionPreview }}</p>
+									<div class="mt-4 flex flex-wrap items-center gap-2 border-t border-[#edf0ec] pt-4">
+										<a href="/products/{{ product.id }}" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Voir</a>
+										<a href="/products/{{ product.id }}/edit" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Modifier</a>
+										<form action="/products/{{ product.id }}/delete" method="post" data-confirm-message="Supprimer ce produit ?">
+											<button type="submit" class="rounded-lg border border-[#f2c2c2] px-3 py-2 text-sm font-semibold text-[#9a1c1c] transition hover:bg-[#fff2f2]">Supprimer</button>
+										</form>
+									</div>
+								</div>
+							</article>
+						{% endfor %}
+					</div>
+				{% else %}
+					<div class="mt-5 rounded-lg border border-dashed border-[#becabc] bg-white p-8 text-center">
+						<p class="text-base font-semibold text-[#0b1c30]">Aucun produit trouve.</p>
+						<p class="mt-2 text-sm text-[#5a6558]">Essayez une recherche plus large ou ajoutez un produit.</p>
+					</div>
+				{% endif %}
+
+				{% if pagination.products.totalPages > 1 %}
+					<div class="mt-5 flex flex-wrap items-center justify-end gap-2">
+						{% if pagination.products.current > 1 %}
+							<a href="/user-dashboard?{{ filters.queryBase }}&productsPage={{ pagination.products.current - 1 }}&opinionsPage={{ pagination.opinions.current }}&commentsPage={{ pagination.comments.current }}" class="rounded-lg border border-[#becabc] bg-white px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Precedent</a>
+						{% endif %}
+						<span class="text-sm font-semibold text-[#5a6558]">Page {{ pagination.products.current }} / {{ pagination.products.totalPages }}</span>
+						{% if pagination.products.current < pagination.products.totalPages %}
+							<a href="/user-dashboard?{{ filters.queryBase }}&productsPage={{ pagination.products.current + 1 }}&opinionsPage={{ pagination.opinions.current }}&commentsPage={{ pagination.comments.current }}" class="rounded-lg border border-[#becabc] bg-white px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Suivant</a>
+						{% endif %}
+					</div>
+				{% endif %}
+			</section>
+
+			<div class="mt-8 grid gap-6 lg:grid-cols-2">
+				<section class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#edf0ec] pb-3">
+						<h2 class="text-xl font-bold text-[#0b1c30]">Mes avis</h2>
+						<span class="text-sm font-semibold text-[#5a6558]">{{ opinions|length }} sur {{ pagination.opinions.total }}</span>
+					</div>
+					{% if opinions|length %}
+						<div class="divide-y divide-[#edf0ec]">
+							{% for opinion in opinions %}
+								<article class="py-4">
+									<div class="flex items-start justify-between gap-4">
+										<div>
+											<p class="text-sm font-semibold text-[#00652c]">{{ opinion.product.title }}</p>
+											<h3 class="mt-1 font-bold text-[#0b1c30]">{{ opinion.title }}</h3>
+										</div>
+										<span class="shrink-0 rounded-full bg-[#e7f8ec] px-3 py-1 text-sm font-bold text-[#00652c]">{{ opinion.note }}/5</span>
+									</div>
+									<p class="mt-2 text-sm leading-6 text-[#5a6558]">{{ opinion.textPreview }}</p>
+									<p class="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#7b8579]">{{ opinion.product.category.name }} - {{ opinion._count.comments }} commentaires - {{ opinion._count.likedBy }} likes</p>
+									<div class="mt-3 flex flex-wrap gap-2">
+										<a href="/products/{{ opinion.product_id }}" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Voir</a>
+										<a href="/opinions/{{ opinion.id }}/edit" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Modifier</a>
+										<form action="/opinions/{{ opinion.id }}/delete" method="post" data-confirm-message="Supprimer cet avis ?">
+											<button type="submit" class="rounded-lg border border-[#f2c2c2] px-3 py-2 text-sm font-semibold text-[#9a1c1c] transition hover:bg-[#fff2f2]">Supprimer</button>
+										</form>
+									</div>
+								</article>
+							{% endfor %}
+						</div>
+					{% else %}
+						<p class="py-8 text-center text-sm font-semibold text-[#5a6558]">Aucun avis trouve.</p>
+					{% endif %}
+
+					{% if pagination.opinions.totalPages > 1 %}
+						<div class="mt-4 flex flex-wrap items-center justify-end gap-2">
+							{% if pagination.opinions.current > 1 %}
+								<a href="/user-dashboard?{{ filters.queryBase }}&productsPage={{ pagination.products.current }}&opinionsPage={{ pagination.opinions.current - 1 }}&commentsPage={{ pagination.comments.current }}" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Precedent</a>
+							{% endif %}
+							<span class="text-sm font-semibold text-[#5a6558]">Page {{ pagination.opinions.current }} / {{ pagination.opinions.totalPages }}</span>
+							{% if pagination.opinions.current < pagination.opinions.totalPages %}
+								<a href="/user-dashboard?{{ filters.queryBase }}&productsPage={{ pagination.products.current }}&opinionsPage={{ pagination.opinions.current + 1 }}&commentsPage={{ pagination.comments.current }}" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Suivant</a>
+							{% endif %}
+						</div>
+					{% endif %}
+				</section>
+
+				<section class="rounded-lg border border-[#d8ded6] bg-white p-5 shadow-[0_4px_18px_rgba(15,42,28,0.05)]">
+					<div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#edf0ec] pb-3">
+						<h2 class="text-xl font-bold text-[#0b1c30]">Mes commentaires</h2>
+						<span class="text-sm font-semibold text-[#5a6558]">{{ comments|length }} sur {{ pagination.comments.total }}</span>
+					</div>
+					{% if comments|length %}
+						<div class="divide-y divide-[#edf0ec]">
+							{% for comment in comments %}
+								<article class="py-4">
+									<p class="text-sm font-semibold text-[#00652c]">{{ comment.opinion.product.title }}</p>
+									<h3 class="mt-1 font-bold text-[#0b1c30]">{{ comment.title }}</h3>
+									<p class="mt-2 text-sm leading-6 text-[#5a6558]">{{ comment.textPreview }}</p>
+									<p class="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#7b8579]">{{ comment.opinion.product.category.name }} - sur "{{ comment.opinion.title }}" - {{ comment._count.likedBy }} likes</p>
+									{% if user and (comment.user_id == user.id or user.role == 'admin' or user.role == 'modo') %}
+										<div class="mt-3 flex flex-wrap gap-2">
+											<form action="/comments/{{ comment.id }}/delete" method="post" data-confirm-message="Supprimer ce commentaire ?">
+												<button type="submit" class="rounded-lg border border-[#f2c2c2] px-3 py-2 text-sm font-semibold text-[#9a1c1c] transition hover:bg-[#fff2f2]">Supprimer</button>
+											</form>
+										</div>
+									{% endif %}
+								</article>
+							{% endfor %}
+						</div>
+					{% else %}
+						<p class="py-8 text-center text-sm font-semibold text-[#5a6558]">Aucun commentaire trouve.</p>
+					{% endif %}
+
+					{% if pagination.comments.totalPages > 1 %}
+						<div class="mt-4 flex flex-wrap items-center justify-end gap-2">
+							{% if pagination.comments.current > 1 %}
+								<a href="/user-dashboard?{{ filters.queryBase }}&productsPage={{ pagination.products.current }}&opinionsPage={{ pagination.opinions.current }}&commentsPage={{ pagination.comments.current - 1 }}" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Precedent</a>
+							{% endif %}
+							<span class="text-sm font-semibold text-[#5a6558]">Page {{ pagination.comments.current }} / {{ pagination.comments.totalPages }}</span>
+							{% if pagination.comments.current < pagination.comments.totalPages %}
+								<a href="/user-dashboard?{{ filters.queryBase }}&productsPage={{ pagination.products.current }}&opinionsPage={{ pagination.opinions.current }}&commentsPage={{ pagination.comments.current + 1 }}" class="rounded-lg border border-[#becabc] px-3 py-2 text-sm font-semibold text-[#00652c] transition hover:border-[#00652c] hover:bg-[#ecfdf0]">Suivant</a>
+							{% endif %}
+						</div>
+					{% endif %}
+				</section>
+			</div>
+		</section>
+	</main>
+{% endblock %}
